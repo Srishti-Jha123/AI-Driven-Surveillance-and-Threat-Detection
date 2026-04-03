@@ -2,6 +2,8 @@ from ultralytics import YOLO
 import cv2
 import urllib.request
 import numpy as np
+import time
+import winsound
 
 # Load YOLO model
 model = YOLO("yolov8n.pt")
@@ -10,6 +12,7 @@ model = YOLO("yolov8n.pt")
 url = "http://192.0.0.4:8080/shot.jpg"
 
 detect_count = 0  # for stability
+last_alert_time=0 #to control buzzer frequency
 
 while True:
     try:
@@ -63,6 +66,12 @@ while True:
                 (0, 0, 255),
                 3
             )
+            current_time = time.time()
+
+           if current_time - last_alert_time > 3:  # 3 sec gap
+               winsound.Beep(1000, 500)
+               last_alert_time = current_time
+            
 
         # Show output
         cv2.imshow("Stage 6 - Weapon Detection", annotated)
